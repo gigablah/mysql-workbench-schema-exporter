@@ -40,6 +40,7 @@ interface FormatterInterface {
     const CFG_ENHANCE_M2M_DETECTION  = 'enhanceManyToManyDetection';
     const CFG_LOG_TO_CONSOLE         = 'logToConsole';
     const CFG_LOG_FILE               = 'logFile';
+    const CFG_SKIP_RELATIONS         = 'skipRelations';
 
     /**
      * Get the registry object.

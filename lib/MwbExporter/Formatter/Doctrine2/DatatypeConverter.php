@@ -132,6 +132,11 @@ class DatatypeConverter extends BaseDatatypeConverter
 
     public function getMappedType(Column $column)
     {
+        $type = trim($this->parseComment('type', $column->getParameters()->get('comment')));
+        if ($type) {
+            return $type;
+        }
+
         $type = parent::getMappedType($column);
         // map tinyint(1) as boolean
         if ('tinyint' == substr($column->getColumnType(), -7) && 1 == $column->getParameters()->get('precision')) {
@@ -139,5 +144,17 @@ class DatatypeConverter extends BaseDatatypeConverter
         }
 
         return $type;
+    }
+
+    protected function parseComment($needle_raw, $comment)
+    {
+        if (!$comment) {
+            return '';
+        }
+        $needle_quoted = preg_quote($needle_raw);
+        $pattern = '@\{(d|doctrine):'.$needle_quoted.'\}(.+)\{\/(d|doctrine):'.$needle_quoted.'\}@si';
+        if (preg_match($pattern, $comment, $matches) && isset($matches[2])) {
+            return $matches[2];
+        }
     }
 }

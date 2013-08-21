@@ -115,6 +115,10 @@ class Table extends Base
      */
     public function initForeignKeys()
     {
+        if ($this->getDocument()->getConfig()->get(FormatterInterface::CFG_SKIP_RELATIONS)) {
+            return $this;
+        }
+
         $elems = $this->node->xpath("value[@key='foreignKeys']");
         $this->foreignKeys = $this->getDocument()->getFormatter()->createForeignKeys($this, $elems[0]);
 
@@ -128,6 +132,10 @@ class Table extends Base
      */
     public function initManyToManyRelations()
     {
+        if ($this->getDocument()->getConfig()->get(FormatterInterface::CFG_SKIP_RELATIONS)) {
+            return $this;
+        }
+
         if ($this->isManyToMany()) {
             $fk1 = $this->foreignKeys[0];
             $fk2 = $this->foreignKeys[1];
@@ -338,6 +346,26 @@ class Table extends Base
     public function getModelNameInPlural()
     {
         return Inflector::pluralize($this->getModelName());
+    }
+
+    /**
+     * Get the parent class from table comments.
+     *
+     * @return string
+     */
+    public function getParentClass()
+    {
+        return trim($this->parseComment('parent', $this->parameters->get('comment')));
+    }
+
+    /**
+     * Get the repository class from table comments.
+     *
+     * @return string
+     */
+    public function getRepositoryClass()
+    {
+        return trim($this->parseComment('repository', $this->parameters->get('comment')));
     }
 
     /**

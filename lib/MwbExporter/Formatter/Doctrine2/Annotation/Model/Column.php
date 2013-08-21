@@ -220,7 +220,7 @@ class Column extends BaseColumn
             ->write(' * @param '.$nativeType.' $'.$this->getColumnName())
             ->write(' * @return '.$table->getNamespace())
             ->write(' */')
-            ->write('public function set'.$this->columnNameBeautifier($this->getColumnName()).'($'.$this->getColumnName().')')
+            ->write('public function set'.$this->columnNameBeautifier($this->getColumnName()).'('.($nativeType == 'datetime' ? '\\DateTime ' : '').'$'.$this->getColumnName().')')
             ->write('{')
             ->indent()
                 ->write('$this->'.$this->getColumnName().' = $'.$this->getColumnName().';')
@@ -290,7 +290,7 @@ class Column extends BaseColumn
                     ->write('public function get'.$this->columnNameBeautifier(Inflector::pluralize($foreign->getOwningTable()->getModelName())).$related.'()')
                     ->write('{')
                     ->indent()
-                        ->write('return $this->'.lcfirst(Inflector::pluralize($foreign->getOwningTable()->getModelName())).$related.';')
+                        ->write('return $this->'.lcfirst(Inflector::pluralize($foreign->getOwningTable()->getModelName())).$related.'->toArray();')
                     ->outdent()
                     ->write('}')
                 ;

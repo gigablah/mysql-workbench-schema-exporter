@@ -192,11 +192,11 @@ class Table extends BaseTable
                 ->write(' * '.$this->getNamespace(null, false))
                 ->write(' *')
                 ->writeIf($comment, $comment)
-                ->write(' * '.$this->getAnnotation('Entity', array('repositoryClass' => $this->getDocument()->getConfig()->get(Formatter::CFG_AUTOMATIC_REPOSITORY) ? $repositoryNamespace.$this->getModelName().'Repository' : null)))
+                ->write(' * '.$this->getAnnotation('Entity', array('repositoryClass' => $this->getDocument()->getConfig()->get(Formatter::CFG_AUTOMATIC_REPOSITORY) ? $repositoryNamespace.$this->getModelName().'Repository' : (($repositoryClass = $this->getRepositoryClass()) ? $repositoryNamespace.$repositoryClass : null))))
                 ->write(' * '.$this->getAnnotation('Table', array('name' => $this->quoteIdentifier($this->getRawTableName()), 'indexes' => $this->getIndexesAnnotation(), 'uniqueConstraints' => $this->getUniqueConstraintsAnnotation())))
                 ->writeIf($lifecycleCallbacks, ' * @HasLifecycleCallbacks')
                 ->write(' */')
-                ->write('class '.$this->getModelName().(($implements = $this->getClassImplementations()) ? ' implements '.$implements : ''))
+                ->write('class '.$this->getModelName().(($parent_class = $this->getParentClass()) ? ' extends '.$parent_class : '').(($implements = $this->getClassImplementations()) ? ' implements '.$implements : ''))
                 ->write('{')
                 ->indent()
                     ->writeCallback(function(WriterInterface $writer, Table $_this = null) use ($skipGetterAndSetter, $serializableEntity, $lifecycleCallbacks) {
